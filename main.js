@@ -6,7 +6,7 @@ const progressBar = document.getElementById('progress-bar');
 const progressText = document.getElementById('progress-text');
 const topProgressBar = document.getElementById('top-progress-bar');
 
-// Store pre-decoded ImageBitmaps in GPU memory
+// GPU ImageBitmaps memory array
 const frameBitmaps = new Array(FRAME_COUNT);
 let loadedCount = 0;
 let lastDrawnFrame = -1;
@@ -24,40 +24,48 @@ function getFramePath(index) {
   return `./ezgif-6f07f9ea189b5dfe-jpg/ezgif-frame-${paddedIndex}.jpg`;
 }
 
-// Preload & convert frames to ImageBitmap for zero-latency GPU drawing
-function preloadImages() {
-  return new Promise((resolve) => {
-    for (let i = 1; i <= FRAME_COUNT; i++) {
+// Load a single frame via fetch + blob + createImageBitmap for zero network lag
+async function loadSingleFrame(index) {
+  try {
+    const response = await fetch(getFramePath(index));
+    const blob = await response.blob();
+    const bitmap = await createImageBitmap(blob);
+    frameBitmaps[index - 1] = bitmap;
+  } catch (err) {
+    // Fallback if fetch fails
+    await new Promise((resolve) => {
       const img = new Image();
-      img.src = getFramePath(i);
-      
-      const onDone = () => {
-        loadedCount++;
-        const percent = Math.floor((loadedCount / FRAME_COUNT) * 100);
-        if (progressBar) progressBar.style.width = `${percent}%`;
-        if (progressText) progressText.innerText = `${percent}%`;
-        if (loadedCount === FRAME_COUNT) resolve();
-      };
-
+      img.src = getFramePath(index);
       img.onload = () => {
         if (window.createImageBitmap) {
           createImageBitmap(img)
-            .then((bitmap) => {
-              frameBitmaps[i - 1] = bitmap;
-              onDone();
-            })
-            .catch(() => {
-              frameBitmaps[i - 1] = img;
-              onDone();
-            });
+            .then((bm) => { frameBitmaps[index - 1] = bm; resolve(); })
+            .catch(() => { frameBitmaps[index - 1] = img; resolve(); });
         } else {
-          frameBitmaps[i - 1] = img;
-          onDone();
+          frameBitmaps[index - 1] = img;
+          resolve();
         }
       };
-      img.onerror = onDone;
+      img.onerror = resolve;
+    });
+  }
+
+  loadedCount++;
+  const percent = Math.floor((loadedCount / FRAME_COUNT) * 100);
+  if (progressBar) progressBar.style.width = `${percent}%`;
+  if (progressText) progressText.innerText = `${percent}%`;
+}
+
+// Batch load all 240 frames in parallel chunks of 16
+async function preloadImages() {
+  const BATCH_SIZE = 16;
+  for (let i = 1; i <= FRAME_COUNT; i += BATCH_SIZE) {
+    const batchPromises = [];
+    for (let j = i; j < Math.min(FRAME_COUNT + 1, i + BATCH_SIZE); j++) {
+      batchPromises.push(loadSingleFrame(j));
     }
-  });
+    await Promise.all(batchPromises);
+  }
 }
 
 // Pre-calculate canvas scale & aspect ratio bounds on resize
@@ -88,16 +96,15 @@ function resizeCanvas() {
   cachedOffsetX = (cachedCanvasWidth - cachedDrawWidth) / 2;
   cachedOffsetY = (cachedCanvasHeight - cachedDrawHeight) / 2;
 
-  // Immediate redraw on resize
   if (lastDrawnFrame >= 0) {
     drawFrame(lastDrawnFrame);
   }
 }
 
-// Direct GPU bitmap draw (no double-interpolation lag)
+// Direct GPU bitmap draw (Zero network or decoding latency)
 function drawFrame(frameIndex) {
   const index = Math.max(0, Math.min(FRAME_COUNT - 1, Math.round(frameIndex)));
-  if (index === lastDrawnFrame) return; // Skip duplicate renders
+  if (index === lastDrawnFrame) return;
 
   const bitmap = frameBitmaps[index];
   if (!bitmap) return;
@@ -118,7 +125,6 @@ function updateScrollPosition() {
     topProgressBar.style.width = `${scrollFraction * 100}%`;
   }
 
-  // Draw frame directly on scroll tick - 100% sync, zero lag!
   drawFrame(targetFrame);
   updateActiveNavLink();
 }
@@ -378,19 +384,21 @@ function init3DCardTilt() {
 
 // Application Startup
 async function init() {
+  // Preload all 240 frames 100% before revealing site
   await preloadImages();
   resizeCanvas();
 
   window.addEventListener('resize', resizeCanvas, { passive: true });
 
+  // Hide loader only when 100% of frames are in GPU memory
   if (loader) {
     loader.classList.add('hidden');
   }
 
-  // Lenis smooth scroll for ultra-responsive physics
+  // Lenis smooth scroll
   if (typeof Lenis !== 'undefined') {
     const lenis = new Lenis({
-      duration: 0.6, // Fast, snappy response
+      duration: 0.6,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       touchMultiplier: 1.2,
