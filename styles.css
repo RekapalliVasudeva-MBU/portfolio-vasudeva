@@ -468,11 +468,11 @@ canvas {
   text-shadow: var(--text-shadow);
 }
 
-/* Profile Image Box */
+/* Elegant Uncropped Profile Image Box */
 .hero-image-wrapper {
   position: relative;
-  width: 240px;
-  height: 240px;
+  width: 250px;
+  height: 290px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -482,9 +482,9 @@ canvas {
 .image-glow-ring {
   position: absolute;
   inset: -6px;
-  border-radius: 50%;
+  border-radius: 24px;
   background: linear-gradient(135deg, #a78bfa, #ec4899, #3b82f6);
-  filter: blur(10px);
+  filter: blur(12px);
   opacity: 0.75;
   animation: pulse-glow 4s ease-in-out infinite alternate;
 }
@@ -496,28 +496,29 @@ canvas {
 
 .profile-img {
   position: relative;
-  width: 230px;
-  height: 230px;
-  border-radius: 50%;
+  width: 240px;
+  height: 280px;
+  border-radius: 20px;
   object-fit: cover;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  object-position: center top;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
   z-index: 2;
 }
 
 .exp-badge {
   position: absolute;
-  bottom: -4px;
+  bottom: -6px;
   right: -6px;
-  background: rgba(10, 12, 20, 0.85);
-  border: 1px solid rgba(167, 139, 250, 0.4);
+  background: rgba(10, 12, 20, 0.9);
+  border: 1px solid rgba(167, 139, 250, 0.5);
   padding: 8px 14px;
   border-radius: 12px;
   z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
 
 .exp-num {
@@ -1030,7 +1031,7 @@ canvas {
 }
 
 .contact-detail-item strong {
-  display: block;
+  display block;
   font-size: 13px;
   text-shadow: var(--text-shadow);
 }
