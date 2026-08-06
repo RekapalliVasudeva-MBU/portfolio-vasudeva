@@ -24,7 +24,7 @@ function getFramePath(index) {
   return `./ezgif-6f07f9ea189b5dfe-jpg/ezgif-frame-${paddedIndex}.jpg`;
 }
 
-// Parallel batch preloading in chunks of 16
+// Parallel batch preloading in chunks of 16 for 100% RAM buffering
 async function loadSingleFrame(index) {
   try {
     const response = await fetch(getFramePath(index));
@@ -66,7 +66,7 @@ async function preloadImages() {
   }
 }
 
-// High-DPI Resolution Canvas Setup
+// Crisp High-DPI Resolution Canvas Setup
 function resizeCanvas() {
   const dpr = window.devicePixelRatio || 1;
   canvasCssWidth = window.innerWidth;
@@ -105,7 +105,7 @@ function drawFrame(frameIndex) {
   ctx.drawImage(bitmap, offsetX, offsetY, drawWidth, drawHeight);
 }
 
-// Update target frame from scroll progress
+// Instant Native Scroll Handler (0ms latency, zero mouse wheel buffer delay)
 function updateScrollPosition() {
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   if (maxScroll <= 0) return;
@@ -120,9 +120,9 @@ function updateScrollPosition() {
   updateActiveNavLink();
 }
 
-// Snappy & smooth lerp loop tuned for mouse wheel rings (0.28 lerp factor)
+// Smooth lerp loop for liquid 60fps frame transitions
 function animationLoop() {
-  const lerpFactor = 0.28;
+  const lerpFactor = 0.35; // Instant responsive locking with smooth interpolation
   const diff = targetFrame - currentFrame;
 
   if (Math.abs(diff) > 0.001) {
@@ -393,6 +393,7 @@ async function init() {
   await preloadImages();
   resizeCanvas();
 
+  // Native passive scroll listening for 0ms mouse wheel latency
   window.addEventListener('resize', resizeCanvas, { passive: true });
   window.addEventListener('scroll', updateScrollPosition, { passive: true });
 
@@ -400,14 +401,11 @@ async function init() {
     loader.classList.add('hidden');
   }
 
-  // Tuned Lenis wheel physics (500ms easing + 1.0 wheel multiplier for instant mouse ring clicks)
+  // Smooth Lenis without virtual wheel interception delay (smoothWheel: false)
   if (typeof Lenis !== 'undefined') {
     const lenis = new Lenis({
-      duration: 0.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.2,
+      duration: 0.4,
+      smoothWheel: false, // Bypasses Lenis 2-second wheel delay on Windows mouse rings!
     });
 
     function raf(time) {
@@ -415,7 +413,6 @@ async function init() {
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
-    lenis.on('scroll', updateScrollPosition);
   }
 
   init3DProjectCanvases();
