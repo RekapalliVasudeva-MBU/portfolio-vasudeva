@@ -1,22 +1,22 @@
 const FRAME_COUNT = 240;
 const canvas = document.getElementById('animation-canvas');
-const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+const ctx = canvas.getContext('2d', { alpha: false });
 const loader = document.getElementById('loader');
 const progressBar = document.getElementById('progress-bar');
 const progressText = document.getElementById('progress-text');
 const topProgressBar = document.getElementById('top-progress-bar');
 
-// GPU ImageBitmaps memory array
 const frameBitmaps = new Array(FRAME_COUNT);
 let loadedCount = 0;
-let lastDrawnFrame = -1;
+let targetFrame = 0;
+let currentFrame = 0;
 
-let cachedCanvasWidth = 0;
-let cachedCanvasHeight = 0;
-let cachedDrawWidth = 0;
-let cachedDrawHeight = 0;
-let cachedOffsetX = 0;
-let cachedOffsetY = 0;
+let canvasCssWidth = 0;
+let canvasCssHeight = 0;
+let drawWidth = 0;
+let drawHeight = 0;
+let offsetX = 0;
+let offsetY = 0;
 let isPortfolioVisible = false;
 
 function getFramePath(index) {
@@ -24,7 +24,7 @@ function getFramePath(index) {
   return `./ezgif-6f07f9ea189b5dfe-jpg/ezgif-frame-${paddedIndex}.jpg`;
 }
 
-// Load a single frame via fetch + blob + createImageBitmap for zero network lag
+// Parallel batch preloading in chunks of 16
 async function loadSingleFrame(index) {
   try {
     const response = await fetch(getFramePath(index));
@@ -32,7 +32,6 @@ async function loadSingleFrame(index) {
     const bitmap = await createImageBitmap(blob);
     frameBitmaps[index - 1] = bitmap;
   } catch (err) {
-    // Fallback if fetch fails
     await new Promise((resolve) => {
       const img = new Image();
       img.src = getFramePath(index);
@@ -56,7 +55,6 @@ async function loadSingleFrame(index) {
   if (progressText) progressText.innerText = `${percent}%`;
 }
 
-// Batch load all 240 frames in parallel chunks of 16
 async function preloadImages() {
   const BATCH_SIZE = 16;
   for (let i = 1; i <= FRAME_COUNT; i += BATCH_SIZE) {
@@ -68,65 +66,73 @@ async function preloadImages() {
   }
 }
 
-// Pre-calculate canvas scale & aspect ratio bounds on resize
+// Crisp High-DPI Resolution Canvas Setup
 function resizeCanvas() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  cachedCanvasWidth = window.innerWidth;
-  cachedCanvasHeight = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+  canvasCssWidth = window.innerWidth;
+  canvasCssHeight = window.innerHeight;
   
-  canvas.width = cachedCanvasWidth * dpr;
-  canvas.height = cachedCanvasHeight * dpr;
-  ctx.scale(dpr, dpr);
+  canvas.width = Math.round(canvasCssWidth * dpr);
+  canvas.height = Math.round(canvasCssHeight * dpr);
 
   const sampleImg = frameBitmaps[0] || { width: 1920, height: 1080 };
   const imgWidth = sampleImg.width || sampleImg.naturalWidth || 1920;
   const imgHeight = sampleImg.height || sampleImg.naturalHeight || 1080;
 
   const imgRatio = imgWidth / imgHeight;
-  const canvasRatio = cachedCanvasWidth / cachedCanvasHeight;
+  const canvasRatio = canvas.width / canvas.height;
 
   if (canvasRatio > imgRatio) {
-    cachedDrawWidth = cachedCanvasWidth;
-    cachedDrawHeight = cachedCanvasWidth / imgRatio;
+    drawWidth = canvas.width;
+    drawHeight = canvas.width / imgRatio;
   } else {
-    cachedDrawHeight = cachedCanvasHeight;
-    cachedDrawWidth = cachedCanvasHeight * imgRatio;
+    drawHeight = canvas.height;
+    drawWidth = canvas.height * imgRatio;
   }
 
-  cachedOffsetX = (cachedCanvasWidth - cachedDrawWidth) / 2;
-  cachedOffsetY = (cachedCanvasHeight - cachedDrawHeight) / 2;
-
-  if (lastDrawnFrame >= 0) {
-    drawFrame(lastDrawnFrame);
-  }
+  offsetX = (canvas.width - drawWidth) / 2;
+  offsetY = (canvas.height - drawHeight) / 2;
 }
 
-// Direct GPU bitmap draw (Zero network or decoding latency)
+// Draw Frame at Full High-DPI Resolution
 function drawFrame(frameIndex) {
   const index = Math.max(0, Math.min(FRAME_COUNT - 1, Math.round(frameIndex)));
-  if (index === lastDrawnFrame) return;
-
   const bitmap = frameBitmaps[index];
   if (!bitmap) return;
 
-  ctx.drawImage(bitmap, cachedOffsetX, cachedOffsetY, cachedDrawWidth, cachedDrawHeight);
-  lastDrawnFrame = index;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(bitmap, offsetX, offsetY, drawWidth, drawHeight);
 }
 
-// Update scroll target with instant synchronization
+// Update target frame from scroll progress
 function updateScrollPosition() {
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   if (maxScroll <= 0) return;
 
   const scrollFraction = Math.max(0, Math.min(1, window.scrollY / maxScroll));
-  const targetFrame = scrollFraction * (FRAME_COUNT - 1);
+  targetFrame = scrollFraction * (FRAME_COUNT - 1);
 
   if (topProgressBar) {
     topProgressBar.style.width = `${scrollFraction * 100}%`;
   }
 
-  drawFrame(targetFrame);
   updateActiveNavLink();
+}
+
+// Continuous ultra-smooth lerp loop (0.18 lerp factor for silky smooth sub-frame physics)
+function animationLoop() {
+  const lerpFactor = 0.18;
+  const diff = targetFrame - currentFrame;
+
+  if (Math.abs(diff) > 0.001) {
+    currentFrame += diff * lerpFactor;
+  } else {
+    currentFrame = targetFrame;
+  }
+
+  drawFrame(currentFrame);
+  requestAnimationFrame(animationLoop);
 }
 
 // Active Nav link tracking
@@ -382,26 +388,24 @@ function init3DCardTilt() {
   });
 }
 
-// Application Startup
+// Startup
 async function init() {
-  // Preload all 240 frames 100% before revealing site
   await preloadImages();
   resizeCanvas();
 
   window.addEventListener('resize', resizeCanvas, { passive: true });
+  window.addEventListener('scroll', updateScrollPosition, { passive: true });
 
-  // Hide loader only when 100% of frames are in GPU memory
   if (loader) {
     loader.classList.add('hidden');
   }
 
-  // Lenis smooth scroll
   if (typeof Lenis !== 'undefined') {
     const lenis = new Lenis({
-      duration: 0.6,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 1.2,
+      touchMultiplier: 1.5,
     });
 
     function raf(time) {
@@ -410,14 +414,13 @@ async function init() {
     }
     requestAnimationFrame(raf);
     lenis.on('scroll', updateScrollPosition);
-  } else {
-    window.addEventListener('scroll', updateScrollPosition, { passive: true });
   }
 
   init3DProjectCanvases();
   init3DCardTilt();
 
   updateScrollPosition();
+  animationLoop();
 }
 
 init();
