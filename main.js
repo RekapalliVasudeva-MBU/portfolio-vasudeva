@@ -1,17 +1,16 @@
 const FRAME_COUNT = 240;
 const canvas = document.getElementById('animation-canvas');
-const ctx = canvas.getContext('2d', { alpha: false });
+const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
 const loader = document.getElementById('loader');
 const progressBar = document.getElementById('progress-bar');
 const progressText = document.getElementById('progress-text');
 const topProgressBar = document.getElementById('top-progress-bar');
 
-const images = [];
+// Store pre-decoded ImageBitmaps in GPU memory
+const frameBitmaps = new Array(FRAME_COUNT);
 let loadedCount = 0;
-let targetFrame = 0;
-let currentFrame = 0;
+let lastDrawnFrame = -1;
 
-// Pre-calculated canvas draw dimensions for zero per-frame math overhead
 let cachedCanvasWidth = 0;
 let cachedCanvasHeight = 0;
 let cachedDrawWidth = 0;
@@ -25,7 +24,7 @@ function getFramePath(index) {
   return `./ezgif-6f07f9ea189b5dfe-jpg/ezgif-frame-${paddedIndex}.jpg`;
 }
 
-// Preload all 240 frames with GPU Pre-decoding for zero lag
+// Preload & convert frames to ImageBitmap for zero-latency GPU drawing
 function preloadImages() {
   return new Promise((resolve) => {
     for (let i = 1; i <= FRAME_COUNT; i++) {
@@ -41,21 +40,29 @@ function preloadImages() {
       };
 
       img.onload = () => {
-        if (img.decode) {
-          img.decode().then(onDone).catch(onDone);
+        if (window.createImageBitmap) {
+          createImageBitmap(img)
+            .then((bitmap) => {
+              frameBitmaps[i - 1] = bitmap;
+              onDone();
+            })
+            .catch(() => {
+              frameBitmaps[i - 1] = img;
+              onDone();
+            });
         } else {
+          frameBitmaps[i - 1] = img;
           onDone();
         }
       };
       img.onerror = onDone;
-      images.push(img);
     }
   });
 }
 
-// Calculate cover fit metrics on window resize only
+// Pre-calculate canvas scale & aspect ratio bounds on resize
 function resizeCanvas() {
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
   cachedCanvasWidth = window.innerWidth;
   cachedCanvasHeight = window.innerHeight;
   
@@ -63,9 +70,9 @@ function resizeCanvas() {
   canvas.height = cachedCanvasHeight * dpr;
   ctx.scale(dpr, dpr);
 
-  const sampleImg = images[0] || { naturalWidth: 1920, naturalHeight: 1080 };
-  const imgWidth = sampleImg.naturalWidth || 1920;
-  const imgHeight = sampleImg.naturalHeight || 1080;
+  const sampleImg = frameBitmaps[0] || { width: 1920, height: 1080 };
+  const imgWidth = sampleImg.width || sampleImg.naturalWidth || 1920;
+  const imgHeight = sampleImg.height || sampleImg.naturalHeight || 1080;
 
   const imgRatio = imgWidth / imgHeight;
   const canvasRatio = cachedCanvasWidth / cachedCanvasHeight;
@@ -80,16 +87,40 @@ function resizeCanvas() {
 
   cachedOffsetX = (cachedCanvasWidth - cachedDrawWidth) / 2;
   cachedOffsetY = (cachedCanvasHeight - cachedDrawHeight) / 2;
+
+  // Immediate redraw on resize
+  if (lastDrawnFrame >= 0) {
+    drawFrame(lastDrawnFrame);
+  }
 }
 
-// High-speed optimized frame draw
+// Direct GPU bitmap draw (no double-interpolation lag)
 function drawFrame(frameIndex) {
   const index = Math.max(0, Math.min(FRAME_COUNT - 1, Math.round(frameIndex)));
-  const img = images[index];
+  if (index === lastDrawnFrame) return; // Skip duplicate renders
 
-  if (!img || !img.complete) return;
+  const bitmap = frameBitmaps[index];
+  if (!bitmap) return;
 
-  ctx.drawImage(img, cachedOffsetX, cachedOffsetY, cachedDrawWidth, cachedDrawHeight);
+  ctx.drawImage(bitmap, cachedOffsetX, cachedOffsetY, cachedDrawWidth, cachedDrawHeight);
+  lastDrawnFrame = index;
+}
+
+// Update scroll target with instant synchronization
+function updateScrollPosition() {
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  if (maxScroll <= 0) return;
+
+  const scrollFraction = Math.max(0, Math.min(1, window.scrollY / maxScroll));
+  const targetFrame = scrollFraction * (FRAME_COUNT - 1);
+
+  if (topProgressBar) {
+    topProgressBar.style.width = `${scrollFraction * 100}%`;
+  }
+
+  // Draw frame directly on scroll tick - 100% sync, zero lag!
+  drawFrame(targetFrame);
+  updateActiveNavLink();
 }
 
 // Active Nav link tracking
@@ -114,43 +145,13 @@ function updateActiveNavLink() {
   });
 }
 
-// Update scroll target with zero latency
-function updateScroll() {
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  if (maxScroll <= 0) return;
-
-  const scrollFraction = Math.max(0, Math.min(1, window.scrollY / maxScroll));
-  targetFrame = scrollFraction * (FRAME_COUNT - 1);
-
-  if (topProgressBar) {
-    topProgressBar.style.width = `${scrollFraction * 100}%`;
-  }
-
-  updateActiveNavLink();
-}
-
-// Snappy lerp loop (0.42 lerp factor eliminates trailing lag)
-function animationLoop() {
-  const lerpFactor = 0.42; 
-  const diff = targetFrame - currentFrame;
-
-  if (Math.abs(diff) > 0.005) {
-    currentFrame += diff * lerpFactor;
-  } else {
-    currentFrame = targetFrame;
-  }
-
-  drawFrame(currentFrame);
-  requestAnimationFrame(animationLoop);
-}
-
-// 3D Canvas Micro Animations (Optimized with IntersectionObserver)
+// 3D Canvas Micro Animations (Pauses when scrolled out of view)
 function init3DProjectCanvases() {
   const portfolioSection = document.getElementById('portfolio');
   if (portfolioSection) {
     const observer = new IntersectionObserver((entries) => {
       isPortfolioVisible = entries[0].isIntersecting;
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 });
     observer.observe(portfolioSection);
   }
 
@@ -159,7 +160,7 @@ function init3DProjectCanvases() {
   if (ragCanvas) {
     const rctx = ragCanvas.getContext('2d');
     let angle = 0;
-    const nodes = Array.from({ length: 14 }, () => ({
+    const nodes = Array.from({ length: 12 }, () => ({
       x: (Math.random() - 0.5) * 140,
       y: (Math.random() - 0.5) * 80,
       z: (Math.random() - 0.5) * 140,
@@ -167,7 +168,7 @@ function init3DProjectCanvases() {
 
     function renderRAG() {
       if (isPortfolioVisible) {
-        angle += 0.015;
+        angle += 0.012;
         rctx.clearRect(0, 0, ragCanvas.width, ragCanvas.height);
         const cx = ragCanvas.width / 2;
         const cy = ragCanvas.height / 2;
@@ -185,11 +186,11 @@ function init3DProjectCanvases() {
             const dx = projected[i].x - projected[j].x;
             const dy = projected[i].y - projected[j].y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 80) {
+            if (dist < 75) {
               rctx.beginPath();
               rctx.moveTo(projected[i].x, projected[i].y);
               rctx.lineTo(projected[j].x, projected[j].y);
-              rctx.strokeStyle = `rgba(167, 139, 250, ${0.35 * (1 - dist / 80)})`;
+              rctx.strokeStyle = `rgba(167, 139, 250, ${0.3 * (1 - dist / 75)})`;
               rctx.lineWidth = 1;
               rctx.stroke();
             }
@@ -198,7 +199,7 @@ function init3DProjectCanvases() {
 
         projected.forEach((p) => {
           rctx.beginPath();
-          rctx.arc(p.x, p.y, 3.5 * p.scale, 0, Math.PI * 2);
+          rctx.arc(p.x, p.y, 3 * p.scale, 0, Math.PI * 2);
           rctx.fillStyle = '#a78bfa';
           rctx.fill();
         });
@@ -216,8 +217,8 @@ function init3DProjectCanvases() {
     let angleY = 0;
 
     const vertices = [
-      [-35, -35, -35], [35, -35, -35], [35, 35, -35], [-35, 35, -35],
-      [-35, -35, 35],  [35, -35, 35],  [35, 35, 35],  [-35, 35, 35],
+      [-30, -30, -30], [30, -30, -30], [30, 30, -30], [-30, 30, -30],
+      [-30, -30, 30],  [30, -30, 30],  [30, 30, 30],  [-30, 30, 30],
     ];
 
     const edges = [
@@ -228,8 +229,8 @@ function init3DProjectCanvases() {
 
     function renderAether() {
       if (isPortfolioVisible) {
-        angleX += 0.012;
-        angleY += 0.018;
+        angleX += 0.01;
+        angleY += 0.015;
         actx.clearRect(0, 0, aetherCanvas.width, aetherCanvas.height);
         const cx = aetherCanvas.width / 2;
         const cy = aetherCanvas.height / 2;
@@ -251,12 +252,12 @@ function init3DProjectCanvases() {
           actx.moveTo(projected[u].x, projected[u].y);
           actx.lineTo(projected[v].x, projected[v].y);
           actx.strokeStyle = '#60a5fa';
-          actx.lineWidth = 1.5;
+          actx.lineWidth = 1.2;
           actx.stroke();
         });
 
         actx.beginPath();
-        actx.arc(cx, cy, 8, 0, Math.PI * 2);
+        actx.arc(cx, cy, 7, 0, Math.PI * 2);
         actx.fillStyle = '#60a5fa';
         actx.fill();
       }
@@ -287,8 +288,8 @@ function init3DProjectCanvases() {
             const y = cy + (r - rows / 2 + 0.5) * 30;
             const active = Math.abs(y - scanY) < 25;
             ectx.beginPath();
-            ectx.arc(x, y, active ? 5 : 2.5, 0, Math.PI * 2);
-            ectx.fillStyle = active ? '#f472b6' : 'rgba(244, 114, 182, 0.35)';
+            ectx.arc(x, y, active ? 4.5 : 2, 0, Math.PI * 2);
+            ectx.fillStyle = active ? '#f472b6' : 'rgba(244, 114, 182, 0.3)';
             ectx.fill();
           }
         }
@@ -296,8 +297,8 @@ function init3DProjectCanvases() {
         ectx.beginPath();
         ectx.moveTo(40, scanY);
         ectx.lineTo(eusCanvas.width - 40, scanY);
-        ectx.strokeStyle = 'rgba(244, 114, 182, 0.8)';
-        ectx.lineWidth = 1.5;
+        ectx.strokeStyle = 'rgba(244, 114, 182, 0.7)';
+        ectx.lineWidth = 1.2;
         ectx.stroke();
       }
       requestAnimationFrame(renderEUS);
@@ -310,31 +311,31 @@ function init3DProjectCanvases() {
   if (sumCanvas) {
     const sctx = sumCanvas.getContext('2d');
     let time = 0;
-    const particles = Array.from({ length: 20 }, () => ({
+    const particles = Array.from({ length: 18 }, () => ({
       x: Math.random() * 320 + 40,
       y: Math.random() * 160 + 20,
-      speed: Math.random() * 1.5 + 0.8,
-      size: Math.random() * 2.5 + 1.5,
+      speed: Math.random() * 1.2 + 0.6,
+      size: Math.random() * 2 + 1,
     }));
 
     function renderSum() {
       if (isPortfolioVisible) {
-        time += 0.03;
+        time += 0.025;
         sctx.clearRect(0, 0, sumCanvas.width, sumCanvas.height);
         const cx = sumCanvas.width / 2;
         const cy = sumCanvas.height / 2;
 
         sctx.beginPath();
-        sctx.arc(cx, cy, 32 + Math.sin(time) * 4, 0, Math.PI * 2);
+        sctx.arc(cx, cy, 30 + Math.sin(time) * 4, 0, Math.PI * 2);
         sctx.strokeStyle = '#22d3ee';
-        sctx.lineWidth = 1.5;
+        sctx.lineWidth = 1.2;
         sctx.stroke();
 
         particles.forEach((p) => {
           p.x -= p.speed;
           if (p.x < 40) p.x = sumCanvas.width - 40;
           sctx.beginPath();
-          sctx.arc(p.x, p.y + Math.sin(time + p.x) * 5, p.size, 0, Math.PI * 2);
+          sctx.arc(p.x, p.y + Math.sin(time + p.x) * 4, p.size, 0, Math.PI * 2);
           sctx.fillStyle = '#22d3ee';
           sctx.fill();
         });
@@ -345,7 +346,7 @@ function init3DProjectCanvases() {
   }
 }
 
-// Optimized 3D Mouse Parallax Tilt
+// Lightweight 3D Mouse Parallax Tilt
 function init3DCardTilt() {
   const tiltCards = document.querySelectorAll('.tilt-card');
   tiltCards.forEach((card) => {
@@ -359,10 +360,10 @@ function init3DCardTilt() {
           const centerX = rect.width / 2;
           const centerY = rect.height / 2;
 
-          const rotateX = ((y - centerY) / centerY) * -8;
-          const rotateY = ((x - centerX) / centerX) * 8;
+          const rotateX = ((y - centerY) / centerY) * -6;
+          const rotateY = ((x - centerX) / centerX) * 6;
 
-          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
           ticking = false;
         });
         ticking = true;
@@ -370,7 +371,7 @@ function init3DCardTilt() {
     });
 
     card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
     });
   });
 }
@@ -381,18 +382,18 @@ async function init() {
   resizeCanvas();
 
   window.addEventListener('resize', resizeCanvas, { passive: true });
-  window.addEventListener('scroll', updateScroll, { passive: true });
 
   if (loader) {
     loader.classList.add('hidden');
   }
 
+  // Lenis smooth scroll for ultra-responsive physics
   if (typeof Lenis !== 'undefined') {
     const lenis = new Lenis({
-      duration: 0.8,
+      duration: 0.6, // Fast, snappy response
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 1.5,
+      touchMultiplier: 1.2,
     });
 
     function raf(time) {
@@ -400,14 +401,15 @@ async function init() {
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
-    lenis.on('scroll', updateScroll);
+    lenis.on('scroll', updateScrollPosition);
+  } else {
+    window.addEventListener('scroll', updateScrollPosition, { passive: true });
   }
 
   init3DProjectCanvases();
   init3DCardTilt();
 
-  updateScroll();
-  animationLoop();
+  updateScrollPosition();
 }
 
 init();
