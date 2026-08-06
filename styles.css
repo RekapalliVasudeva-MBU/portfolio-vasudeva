@@ -468,57 +468,86 @@ canvas {
   text-shadow: var(--text-shadow);
 }
 
-/* Perfect Full-Bleed 100% Filled Profile Avatar Card (Zero side bars, perfectly uncropped) */
+/* Hyper-Attractive 3D Animated Circle Avatar Orb */
 .hero-image-wrapper {
   position: relative;
-  width: 225px;
-  height: 380px;
+  width: 250px;
+  height: 250px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.image-glow-ring {
+.avatar-rotating-ring {
   position: absolute;
-  inset: -6px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, #a78bfa, #ec4899, #3b82f6);
-  filter: blur(12px);
-  opacity: 0.8;
-  animation: pulse-glow 3.5s ease-in-out infinite alternate;
+  inset: -10px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #22d3ee,
+    #a78bfa,
+    #f472b6,
+    #3b82f6,
+    #22d3ee
+  );
+  animation: spin-ring 5s linear infinite;
+  z-index: 1;
 }
 
-@keyframes pulse-glow {
-  0% { transform: scale(0.98); opacity: 0.65; }
-  100% { transform: scale(1.03); opacity: 0.9; }
+@keyframes spin-ring {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.profile-img {
+.avatar-glow-aurora {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 180deg,
+    rgba(34, 211, 238, 0.8),
+    rgba(167, 139, 250, 0.8),
+    rgba(244, 114, 182, 0.8),
+    rgba(59, 130, 246, 0.8),
+    rgba(34, 211, 238, 0.8)
+  );
+  filter: blur(20px);
+  opacity: 0.85;
+  animation: spin-ring 5s linear infinite reverse, pulse-aurora 3s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes pulse-aurora {
+  0% { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.08); opacity: 0.95; }
+}
+
+.profile-img-circle {
   position: relative;
-  width: 225px;
-  height: 380px;
-  border-radius: 20px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
   object-fit: cover;
   object-position: center 15%;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+  border: 4px solid rgba(10, 12, 22, 0.9);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 0, 0, 0.5);
   z-index: 2;
 }
 
 .exp-badge {
   position: absolute;
-  bottom: -6px;
-  right: -6px;
+  bottom: 0px;
+  right: 0px;
   background: rgba(10, 12, 20, 0.9);
-  border: 1px solid rgba(167, 139, 250, 0.5);
+  border: 1px solid rgba(167, 139, 250, 0.6);
   padding: 8px 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
 }
 
 .exp-num {
