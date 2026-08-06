@@ -468,11 +468,11 @@ canvas {
   text-shadow: var(--text-shadow);
 }
 
-/* Elegant Uncropped Profile Image Box */
+/* Uncropped 100% Fit Profile Avatar Card */
 .hero-image-wrapper {
   position: relative;
-  width: 250px;
-  height: 290px;
+  width: 260px;
+  height: 380px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -484,9 +484,9 @@ canvas {
   inset: -6px;
   border-radius: 24px;
   background: linear-gradient(135deg, #a78bfa, #ec4899, #3b82f6);
-  filter: blur(12px);
-  opacity: 0.75;
-  animation: pulse-glow 4s ease-in-out infinite alternate;
+  filter: blur(14px);
+  opacity: 0.8;
+  animation: pulse-glow 3.5s ease-in-out infinite alternate;
 }
 
 @keyframes pulse-glow {
@@ -496,13 +496,13 @@ canvas {
 
 .profile-img {
   position: relative;
-  width: 240px;
-  height: 280px;
+  width: 250px;
+  height: 370px;
   border-radius: 20px;
-  object-fit: cover;
-  object-position: center top;
+  object-fit: contain;
+  background: rgba(10, 12, 22, 0.75);
   border: 2px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8);
   z-index: 2;
 }
 
@@ -1031,7 +1031,7 @@ canvas {
 }
 
 .contact-detail-item strong {
-  display block;
+  display: block;
   font-size: 13px;
   text-shadow: var(--text-shadow);
 }
