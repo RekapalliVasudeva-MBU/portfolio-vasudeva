@@ -3,120 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rekapalli Vasudeva | AI & Electronics Engineer</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <title>Rekapalli Vasudeva | AI Engineer & Multi-Agent Systems Architect</title>
+  <meta name="description" content="Portfolio of Rekapalli Vasudeva - AI Engineer specializing in Agentic AI, RAG Architectures, Computer Vision, and Deep Learning." />
+  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Lenis Smooth Scroll CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Lenis Smooth Scroll CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css" />
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Preloader Screen -->
+
+  <!-- Fullscreen Preloader -->
   <div id="loader" class="loader-container">
     <div class="loader-content">
       <div class="spinner"></div>
-      <div class="loader-text">Loading Experience... <span id="progress-text">0%</span></div>
+      <div class="loader-text">Loading 3D Experience... <span id="progress-text">0%</span></div>
       <div class="progress-bar-bg">
         <div id="progress-bar" class="progress-bar-fill"></div>
       </div>
     </div>
   </div>
 
-  <!-- Background Fixed Canvas Animation -->
+  <!-- Fixed 3D Canvas Background -->
   <div class="canvas-wrapper">
     <canvas id="animation-canvas"></canvas>
     <div class="canvas-overlay"></div>
   </div>
 
-  <!-- Top Progress Bar -->
+  <!-- Top Scroll Progress Bar -->
   <div class="top-progress-track">
     <div id="top-progress-bar" class="top-progress-fill"></div>
   </div>
 
-  <!-- Portfolio App Container -->
+  <!-- Main App Layout -->
   <div class="app-layout">
     
-    <!-- LEFT SIDEBAR NAVIGATION -->
+    <!-- LEFT SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="logo-avatar">V</div>
+        <div class="logo-avatar">RV</div>
         <div class="logo-info">
           <h3>Vasudeva</h3>
-          <p>AI & ECE Developer</p>
+          <p>AI Engineer</p>
         </div>
       </div>
 
       <nav class="nav-menu">
-        <a href="#home" class="nav-link active"><i class="fa-solid fa-house"></i> <span>Home</span></a>
-        <a href="#services" class="nav-link"><i class="fa-solid fa-briefcase"></i> <span>Services</span></a>
-        <a href="#portfolio" class="nav-link"><i class="fa-solid fa-folder-open"></i> <span>Portfolio</span></a>
-        <a href="#skills" class="nav-link"><i class="fa-solid fa-award"></i> <span>Edu & Achievements</span></a>
-        <a href="#process" class="nav-link"><i class="fa-solid fa-list-check"></i> <span>Process</span></a>
-        <a href="#contact" class="nav-link"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a>
+        <a href="#hero" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="#services" class="nav-link"><i class="fa-solid fa-gears"></i> Expertise</a>
+        <a href="#portfolio" class="nav-link"><i class="fa-solid fa-diagram-project"></i> Projects</a>
+        <a href="#experience" class="nav-link"><i class="fa-solid fa-graduation-cap"></i> Bio & Skills</a>
+        <a href="#contact" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a>
       </nav>
 
-      <!-- Sidebar Widget: Freelance -->
       <div class="sidebar-card">
-        <div class="card-icon"><i class="fa-solid fa-paper-plane"></i></div>
-        <h4>Available for Innovation</h4>
-        <p>Building intelligent AI models & next-gen systems!</p>
-        <a href="#contact" class="btn btn-sm btn-primary">Hire Me <i class="fa-solid fa-arrow-right"></i></a>
+        <div class="card-icon"><i class="fa-solid fa-brain"></i></div>
+        <h4>Agentic AI & RAG</h4>
+        <p>Building next-gen autonomous LLM workflows and vector search pipelines.</p>
       </div>
 
-      <!-- Download CV -->
       <div class="sidebar-cv">
-        <a href="#contact" class="cv-link">
-          <i class="fa-solid fa-download"></i>
-          <span>Vasudeva_CV.pdf</span>
+        <a href="mailto:rekapallivasudeva@gmail.com" class="cv-link">
+          <i class="fa-solid fa-paper-plane"></i> Get In Touch
         </a>
       </div>
 
-      <!-- Social Links with Exact URLs -->
       <div class="social-links">
-        <a href="https://github.com/RekapalliVasudeva-MBU" target="_blank" title="GitHub Profile"><i class="fa-brands fa-github"></i></a>
-        <a href="https://www.linkedin.com/in/rekapalli-vasudeva-880b95378/" target="_blank" title="LinkedIn Profile"><i class="fa-brands fa-linkedin-in"></i></a>
-        <a href="mailto:rekapallivasudeva@gmail.com" title="Email Me"><i class="fa-solid fa-envelope"></i></a>
+        <a href="https://github.com/RekapalliVasudeva-MBU" target="_blank" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/rekapalli-vasudeva-880b95378/" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="mailto:rekapallivasudeva@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
       </div>
     </aside>
 
     <!-- MAIN CONTENT AREA -->
     <main class="main-content">
-      
+
       <!-- HERO SECTION -->
-      <section id="home" class="hero-section">
+      <section id="hero" class="hero-section">
         <div class="hero-container">
           <div class="hero-text">
-            <span class="badge-pill">HELLO, I'M</span>
-            <h1 class="hero-title">Rekapalli <span class="hero-name-white">Vasudeva</span></h1>
-            <p class="hero-subtitle">I Build Agentic AI Systems & High-Performance Software</p>
+            <span class="badge-pill">AGENTIC AI & LLM ARCHITECT</span>
+            <h1 class="hero-title">
+              Hi, I'm <span class="hero-name-white">Rekapalli Vasudeva</span>
+            </h1>
+            <p class="hero-subtitle">B.Tech ECE • AI Systems Engineer</p>
             <p class="hero-description">
-              Passionate AI Engineer & Electronics Communication Engineer specializing in Agentic AI, Multi-Agent Orchestration, 
-              Retrieval-Augmented Generation (RAG) architectures, and modern full-stack development with TypeScript & Python.
+              Specializing in Agentic AI orchestrations, Retrieval-Augmented Generation (RAG), Deep Learning, and real-time Computer Vision solutions.
             </p>
-            <div class="hero-actions">
-              <a href="#portfolio" class="btn btn-primary">View My Work <i class="fa-solid fa-arrow-right"></i></a>
-              <a href="#contact" class="btn btn-outline">Contact Me</a>
-            </div>
             
+            <div class="hero-actions">
+              <a href="#portfolio" class="btn btn-primary">
+                View My Work <i class="fa-solid fa-arrow-down"></i>
+              </a>
+              <a href="#contact" class="btn btn-outline">
+                Contact Me
+              </a>
+            </div>
+
             <div class="trust-bar">
-              <span>TECH STACK:</span>
+              <span>Core Tech:</span>
               <div class="tech-icons">
-                <span title="TypeScript"><i class="fa-brands fa-js"></i> TypeScript</span>
-                <span title="Python"><i class="fa-brands fa-python"></i> Python</span>
-                <span title="PyTorch"><i class="fa-solid fa-brain"></i> PyTorch</span>
-                <span title="React"><i class="fa-brands fa-react"></i> React</span>
-                <span title="FastAPI"><i class="fa-solid fa-bolt"></i> FastAPI</span>
+                <span><i class="fa-code"></i> TypeScript</span>
+                <span><i class="fa-brands fa-python"></i> Python</span>
+                <span><i class="fa-solid fa-microchip"></i> PyTorch</span>
+                <span><i class="fa-solid fa-database"></i> VectorDB</span>
               </div>
             </div>
           </div>
 
-          <div class="hero-image-wrapper">
-            <div class="image-glow-ring"></div>
-            <img src="./rekapalli_vasudeva.jpg" alt="Rekapalli Vasudeva" class="profile-img" />
+          <!-- Hyper-Attractive 3D Animated Circle Avatar -->
+          <div class="hero-image-wrapper tilt-card">
+            <div class="avatar-rotating-ring"></div>
+            <div class="avatar-glow-aurora"></div>
+            <img src="./rekapalli_vasudeva.jpg" alt="Rekapalli Vasudeva" class="profile-img-circle" />
             <div class="exp-badge">
               <span class="exp-num">3+</span>
               <span class="exp-text">Core AI Projects</span>
@@ -125,194 +132,176 @@
         </div>
       </section>
 
-      <!-- SERVICES SECTION -->
+      <!-- EXPERTISE / SERVICES -->
       <section id="services" class="section">
         <div class="section-header">
-          <span class="section-tag">WHAT I DO</span>
-          <h2 class="section-title">Services I Offer</h2>
+          <span class="section-tag">WHAT I BUILD</span>
+          <h2 class="section-title">Core Engineering Capabilities</h2>
         </div>
 
         <div class="grid grid-4">
           <div class="service-card tilt-card">
             <div class="card-icon-box purple"><i class="fa-solid fa-robot"></i></div>
-            <h3>Agentic AI & RAG Solutions</h3>
-            <p>Designing Agentic AI systems, Multi-Agent Orchestration workflows, vector search pipelines & custom LLM integrations.</p>
-            <a href="#portfolio" class="card-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+            <h3>Agentic AI Systems</h3>
+            <p>Designing multi-agent autonomous frameworks capable of reasoning, tool invocation, and task execution.</p>
+            <a href="#portfolio" class="card-link">Explore Projects <i class="fa-solid fa-arrow-right"></i></a>
           </div>
 
           <div class="service-card tilt-card">
-            <div class="card-icon-box blue"><i class="fa-solid fa-microscope"></i></div>
-            <h3>Deep Learning & CNNs</h3>
-            <p>Building specialized Convolutional Neural Networks for medical ultrasound classification (Auto EUS) & computer vision.</p>
-            <a href="#portfolio" class="card-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+            <div class="card-icon-box blue"><i class="fa-solid fa-database"></i></div>
+            <h3>RAG Architectures</h3>
+            <p>Contextual information retrieval systems leveraging vector databases, semantic search, and hybrid ranking.</p>
+            <a href="#portfolio" class="card-link">Explore Projects <i class="fa-solid fa-arrow-right"></i></a>
           </div>
 
           <div class="service-card tilt-card">
-            <div class="card-icon-box pink"><i class="fa-solid fa-desktop"></i></div>
-            <h3>Desktop Application Dev</h3>
-            <p>Crafting high-speed cross-platform desktop software (Aether Desktop) with offline data processing engines.</p>
-            <a href="#portfolio" class="card-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+            <div class="card-icon-box pink"><i class="fa-solid fa-eye"></i></div>
+            <h3>Computer Vision</h3>
+            <p>End-to-end deep learning models using CNNs, YOLO, and PyTorch for medical and real-time image analysis.</p>
+            <a href="#portfolio" class="card-link">Explore Projects <i class="fa-solid fa-arrow-right"></i></a>
           </div>
 
           <div class="service-card tilt-card">
-            <div class="card-icon-box cyan"><i class="fa-solid fa-code"></i></div>
-            <h3>Full-Stack Web Engineering</h3>
-            <p>Developing fast, responsive modern web applications in TypeScript & React with clean code & scalable API integration.</p>
-            <a href="#portfolio" class="card-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+            <div class="card-icon-box cyan"><i class="fa-solid fa-laptop-code"></i></div>
+            <h3>Full-Stack AI Apps</h3>
+            <p>Modern web & desktop interfaces built with TypeScript, React.js, FastAPIs, and Node.js backend services.</p>
+            <a href="#portfolio" class="card-link">Explore Projects <i class="fa-solid fa-arrow-right"></i></a>
           </div>
         </div>
       </section>
 
-      <!-- FEATURED PROJECTS SECTION WITH 3D ANIMATED LOGO CANVASES -->
+      <!-- FEATURED PROJECTS -->
       <section id="portfolio" class="section">
         <div class="section-header">
-          <span class="section-tag">MY WORK</span>
-          <h2 class="section-title">Featured Projects</h2>
+          <span class="section-tag">FEATURED WORK</span>
+          <h2 class="section-title">AI & Systems Showcase</h2>
         </div>
 
         <div class="grid grid-2">
-          <!-- Project 1: RAG (3D Orbiting Node Web Animation) -->
+
+          <!-- Project 1: RAG Architecture -->
           <div class="project-card tilt-card">
             <div class="project-img-box">
-              <div class="project-overlay-badge">RAG & Agentic AI</div>
-              <canvas class="project-3d-canvas" id="canvas-rag" width="400" height="200"></canvas>
+              <canvas id="canvas-rag" class="project-3d-canvas" width="360" height="170"></canvas>
+              <div class="project-overlay-badge">RAG Architecture</div>
             </div>
             <div class="project-content">
-              <span class="project-category">AI / LLM Engine</span>
-              <h3>Project RAG System</h3>
-              <p>Advanced Retrieval-Augmented Generation system featuring hybrid vector-keyword search, multi-agent orchestration, and real-time query synthesis.</p>
+              <span class="project-category">Generative AI / Vector Search</span>
+              <h3>Context-Aware RAG Pipeline</h3>
+              <p>Advanced retrieval-augmented generation engine using vector databases, embedding reranking, and semantic search for high-accuracy domain Q&A.</p>
               <div class="tag-list">
-                <span>Agentic AI</span>
-                <span>TypeScript</span>
-                <span>Python</span>
+                <span>RAG</span>
                 <span>VectorDB</span>
+                <span>Python</span>
                 <span>FastAPI</span>
+                <span>TypeScript</span>
               </div>
             </div>
           </div>
 
-          <!-- Project 2: Aether Desktop (3D Holographic Cube Animation) -->
+          <!-- Project 2: Aether Desktop -->
           <div class="project-card tilt-card">
             <div class="project-img-box">
-              <div class="project-overlay-badge">Desktop Ecosystem</div>
-              <canvas class="project-3d-canvas" id="canvas-aether" width="400" height="200"></canvas>
+              <canvas id="canvas-aether" class="project-3d-canvas" width="360" height="170"></canvas>
+              <div class="project-overlay-badge">System Interface</div>
             </div>
             <div class="project-content">
-              <span class="project-category">Desktop Ecosystem</span>
+              <span class="project-category">Desktop Engineering</span>
               <h3>Aether Desktop App</h3>
-              <p>Cross-platform desktop application built for high-productivity workflows, local data persistence, and intuitive UI/UX interaction.</p>
+              <p>Sleek, high-performance desktop application interface crafted with modern system design and real-time state management.</p>
               <div class="tag-list">
                 <span>TypeScript</span>
                 <span>React</span>
                 <span>Node.js</span>
-                <span>CSS3</span>
+                <span>Tailwind</span>
               </div>
             </div>
           </div>
 
-          <!-- Project 3: Auto EUS CNN (3D Neural Matrix Scanner Animation) -->
+          <!-- Project 3: Auto EUS CNN -->
           <div class="project-card tilt-card">
             <div class="project-img-box">
-              <div class="project-overlay-badge">Medical AI / CNN</div>
-              <canvas class="project-3d-canvas" id="canvas-eus" width="400" height="200"></canvas>
+              <canvas id="canvas-eus" class="project-3d-canvas" width="360" height="170"></canvas>
+              <div class="project-overlay-badge">Computer Vision</div>
             </div>
             <div class="project-content">
-              <span class="project-category">Deep Learning</span>
-              <h3>Auto EUS CNN Project</h3>
-              <p>Deep Learning Convolutional Neural Network model for automated Endoscopic Ultrasound image feature extraction, lesion detection, and diagnostic AI assistance.</p>
+              <span class="project-category">Deep Learning / Medical AI</span>
+              <h3>Auto EUS CNN Diagnostic Model</h3>
+              <p>Endoscopic ultrasound image classification pipeline built with CNNs and PyTorch for automated feature detection.</p>
               <div class="tag-list">
                 <span>PyTorch</span>
-                <span>TensorFlow</span>
                 <span>CNN</span>
-                <span>Deep Learning</span>
+                <span>OpenCV</span>
+                <span>Python</span>
               </div>
             </div>
           </div>
 
-          <!-- Project 4: Text Summarization (3D Morphing Transformer Beam Animation) -->
+          <!-- Project 4: Text Summarization -->
           <div class="project-card tilt-card">
             <div class="project-img-box">
-              <div class="project-overlay-badge">NLP & LLMs</div>
-              <canvas class="project-3d-canvas" id="canvas-sum" width="400" height="200"></canvas>
+              <canvas id="canvas-sum" class="project-3d-canvas" width="360" height="170"></canvas>
+              <div class="project-overlay-badge">NLP / Transformer</div>
             </div>
             <div class="project-content">
-              <span class="project-category">NLP & Transformer Engine</span>
-              <h3>Text Summarization System</h3>
-              <p>Deep learning & Transformer-based Natural Language Processing engine designed for automated multi-document summarization, keyphrase extraction, and concise generation.</p>
+              <span class="project-category">Natural Language Processing</span>
+              <h3>AI Text Summarization Engine</h3>
+              <p>NLP system leveraging transformer architectures for automated abstractive text distillation and document analysis.</p>
               <div class="tag-list">
-                <span>TypeScript</span>
-                <span>Python</span>
-                <span>Transformers</span>
                 <span>NLP</span>
+                <span>Transformers</span>
                 <span>FastAPI</span>
+                <span>Python</span>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
       <!-- STATS BANNER -->
       <section class="stats-banner">
         <div class="stat-item">
-          <h2>3+</h2>
+          <h2>4+</h2>
           <p>Core AI Projects</p>
         </div>
         <div class="stat-item">
-          <h2>ECE</h2>
-          <p>Electronics & Comm Engineering</p>
-        </div>
-        <div class="stat-item">
-          <h2>240</h2>
-          <p>Animation Frames</p>
-        </div>
-        <div class="stat-item">
           <h2>100%</h2>
-          <p>Clean Code Standard</p>
+          <p>TypeScript & Python</p>
+        </div>
+        <div class="stat-item">
+          <h2>Agentic</h2>
+          <p>AI Workflows</p>
+        </div>
+        <div class="stat-item">
+          <h2>ECE</h2>
+          <p>B.Tech Graduate</p>
         </div>
       </section>
 
-      <!-- EDUCATION & ACHIEVEMENTS SECTION -->
-      <section id="skills" class="section">
+      <!-- BIO, EDUCATION & SKILLS -->
+      <section id="experience" class="section">
         <div class="grid grid-2-equal">
           
-          <!-- Education & Achievements Column -->
+          <!-- Education & Background -->
           <div class="education-box">
             <div class="section-header">
-              <span class="section-tag">ACADEMICS & MILESTONES</span>
-              <h2 class="section-title">Education & Achievements</h2>
+              <span class="section-tag">EDUCATION</span>
+              <h2 class="section-title">Academic Foundation</h2>
             </div>
-
+            
             <div class="timeline">
-              <!-- Degree -->
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
-                <div class="timeline-date">DEGREE</div>
-                <h3>B.Tech in Electronics and Communication Engineering</h3>
-                <h4>Specialization in Embedded Systems & AI Signals</h4>
-                <p>Academic background combining hardware systems, signal processing, data structures, and advanced machine learning modeling.</p>
-              </div>
-
-              <!-- Achievement 1: Project RAG -->
-              <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">ACHIEVEMENT — PROJECT RAG</div>
-                <h3>Project RAG System Architecture</h3>
-                <h4>Enterprise Retrieval-Augmented Generation Engine</h4>
-                <p>Successfully engineered an enterprise RAG platform with hybrid vector-keyword indexing, sub-second semantic retrieval, and multi-agent orchestration.</p>
-              </div>
-
-              <!-- Achievement 2: Auto EUS CNN -->
-              <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">ACHIEVEMENT — AUTO EUS CNN</div>
-                <h3>Auto EUS Medical Diagnostic AI</h3>
-                <h4>Endoscopic Ultrasound Deep Learning Model</h4>
-                <p>Developed a high-accuracy Convolutional Neural Network (CNN) pipeline for automated Endoscopic Ultrasound medical image classification and feature detection.</p>
+                <div class="timeline-date">BACHELOR OF TECHNOLOGY</div>
+                <h3>Electronics and Communication Engineering</h3>
+                <h4>Mohan Babu University (MBU)</h4>
+                <p>Focused on Signal Processing, Neural Networks, Computer Vision algorithms, and embedded intelligent systems.</p>
               </div>
             </div>
           </div>
 
-          <!-- Skills Column -->
+          <!-- Technical Skills Cloud -->
           <div class="skills-box">
             <div class="section-header">
               <span class="section-tag">TECHNICAL PROFICIENCY</span>
@@ -324,9 +313,9 @@
               <span class="skill-tag highlight">MULTI-AGENT ORCHESTRATION</span>
               <span class="skill-tag highlight">RAG ARCHITECTURE</span>
               <span class="skill-tag highlight">TYPESCRIPT</span>
-              <span class="skill-tag highlight">PYTHON</span>
-              <span class="skill-tag highlight">PYTORCH</span>
-              <span class="skill-tag highlight">TENSORFLOW</span>
+              <span class="skill-tag">PYTHON</span>
+              <span class="skill-tag">PYTORCH</span>
+              <span class="skill-tag">TENSORFLOW</span>
               <span class="skill-tag">CNN & COMPUTER VISION</span>
               <span class="skill-tag">REACT.JS</span>
               <span class="skill-tag">JAVASCRIPT (ES6+)</span>
@@ -337,76 +326,78 @@
               <span class="skill-tag">HTML5 / CSS3</span>
             </div>
           </div>
+
         </div>
       </section>
 
-      <!-- WORK PROCESS SECTION -->
-      <section id="process" class="section">
+      <!-- WORK PROCESS STEPS -->
+      <section class="section">
         <div class="section-header center">
-          <span class="section-tag">WORKFLOW</span>
-          <h2 class="section-title">Development Process</h2>
+          <span class="section-tag">METHODOLOGY</span>
+          <h2 class="section-title">How I Build AI Solutions</h2>
         </div>
 
         <div class="process-steps">
-          <div class="process-step">
-            <div class="step-num">01</div>
-            <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-            <h3>DISCOVER</h3>
-            <p>Understanding problem domain, dataset curation, and defining system architecture targets.</p>
-          </div>
-
-          <div class="process-step">
-            <div class="step-num">02</div>
+          <div class="process-step tilt-card">
+            <span class="step-num">01</span>
             <div class="step-icon"><i class="fa-solid fa-lightbulb"></i></div>
-            <h3>IDEATE</h3>
-            <p>Formulating deep learning model pipelines, RAG vector schemas, and clean UI wireframes.</p>
+            <h3>Ideation</h3>
+            <p>Problem analysis and architecture design.</p>
           </div>
-
-          <div class="process-step">
-            <div class="step-num">03</div>
-            <div class="step-icon"><i class="fa-solid fa-pen-nib"></i></div>
-            <h3>DESIGN</h3>
-            <p>Crafting visual designs, API blueprints, and smooth interactive components.</p>
+          <div class="process-step tilt-card">
+            <span class="step-num">02</span>
+            <div class="step-icon"><i class="fa-solid fa-database"></i></div>
+            <h3>Data & RAG</h3>
+            <p>Embedding pipelines and vector indexing.</p>
           </div>
-
-          <div class="process-step">
-            <div class="step-num">04</div>
+          <div class="process-step tilt-card">
+            <span class="step-num">03</span>
+            <div class="step-icon"><i class="fa-solid fa-network-wired"></i></div>
+            <h3>Agent Logic</h3>
+            <p>Multi-agent orchestration and reasoning.</p>
+          </div>
+          <div class="process-step tilt-card">
+            <span class="step-num">04</span>
             <div class="step-icon"><i class="fa-solid fa-code"></i></div>
-            <h3>DEVELOP</h3>
-            <p>Writing high-performance neural codebases, desktop runtimes, and fast backend services.</p>
+            <h3>Frontend/API</h3>
+            <p>Clean TypeScript UI & FastAPI backend.</p>
           </div>
-
-          <div class="process-step">
-            <div class="step-num">05</div>
-            <div class="step-icon"><i class="fa-solid fa-paper-plane"></i></div>
-            <h3>DELIVER</h3>
-            <p>Rigorous model validation, latency optimization, automated testing & deployment.</p>
+          <div class="process-step tilt-card">
+            <span class="step-num">05</span>
+            <div class="step-icon"><i class="fa-solid fa-rocket"></i></div>
+            <h3>Deploy</h3>
+            <p>CI/CD delivery and monitoring.</p>
           </div>
         </div>
       </section>
 
-      <!-- QUOTE & STYLISH SIGNATURE SECTION -->
-      <section class="section quote-section">
-        <div class="quote-card">
-          <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
-          <blockquote class="quote-text">
-            "Good design is not just how it looks, but how it works."
-          </blockquote>
+      <!-- QUOTE & SIGNATURE -->
+      <section class="quote-section">
+        <div class="quote-card tilt-card">
+          <i class="fa-solid fa-quote-left quote-icon"></i>
+          <p class="quote-text">
+            "Architecting intelligent, autonomous AI systems that turn complex data into seamless experiences."
+          </p>
+          
           <div class="signature-wrapper">
-            <span class="signature-name">Vasudeva</span>
-            <span class="signature-title">Rekapalli Vasudeva</span>
+            <div class="signature-name">Rekapalli Vasudeva</div>
+            <div class="signature-title">AI Engineer & Developer</div>
           </div>
-          <div class="quote-footer-tag">LET'S CREATE SOMETHING GREAT TOGETHER.</div>
+
+          <div class="quote-footer-tag">
+            <i class="fa-solid fa-shield-halved"></i> INNOVATING WITH AGENTIC AI
+          </div>
         </div>
       </section>
 
       <!-- CONTACT SECTION -->
       <section id="contact" class="section">
         <div class="grid grid-2-equal">
+          
           <div class="contact-info-card">
             <span class="section-tag">GET IN TOUCH</span>
-            <h2>Let's Work Together</h2>
-            <p>I'm open for AI/ML engineering roles, deep learning research, and software collaborations. Let's create something amazing together.</p>
+            <h2>Let's Build Something Intelligent Together</h2>
+            <p>Interested in Agentic AI, RAG architectures, or Computer Vision solutions? Feel free to reach out via email or LinkedIn.</p>
 
             <div class="contact-details">
               <div class="contact-detail-item">
@@ -416,31 +407,29 @@
                   <span><a href="mailto:rekapallivasudeva@gmail.com" class="info-link">rekapallivasudeva@gmail.com</a></span>
                 </div>
               </div>
-
-              <div class="contact-detail-item">
-                <i class="fa-brands fa-github"></i>
-                <div>
-                  <strong>GitHub Profile</strong>
-                  <span><a href="https://github.com/RekapalliVasudeva-MBU" target="_blank" class="info-link">github.com/RekapalliVasudeva-MBU</a></span>
-                </div>
-              </div>
-
               <div class="contact-detail-item">
                 <i class="fa-brands fa-linkedin"></i>
                 <div>
-                  <strong>LinkedIn Profile</strong>
-                  <span><a href="https://www.linkedin.com/in/rekapalli-vasudeva-880b95378/" target="_blank" class="info-link">linkedin.com/in/rekapalli-vasudeva</a></span>
+                  <strong>LinkedIn</strong>
+                  <span><a href="https://www.linkedin.com/in/rekapalli-vasudeva-880b95378/" target="_blank" class="info-link">rekapalli-vasudeva</a></span>
+                </div>
+              </div>
+              <div class="contact-detail-item">
+                <i class="fa-brands fa-github"></i>
+                <div>
+                  <strong>GitHub</strong>
+                  <span><a href="https://github.com/RekapalliVasudeva-MBU" target="_blank" class="info-link">RekapalliVasudeva-MBU</a></span>
                 </div>
               </div>
             </div>
 
             <div class="status-pill">
-              <span class="pulse-dot"></span> AVAILABLE FOR FREELANCE & FULL-TIME ROLES
+              <span class="pulse-dot"></span> Available for AI Engineering Opportunities
             </div>
           </div>
 
-          <div class="contact-form-card">
-            <form id="contact-form" onsubmit="event.preventDefault(); alert('Thank you! Vasudeva will get back to you at rekapallivasudeva@gmail.com');">
+          <div class="contact-form-card tilt-card">
+            <form action="mailto:rekapallivasudeva@gmail.com" method="post" enctype="text/plain">
               <div class="form-group">
                 <label>Your Name</label>
                 <input type="text" placeholder="John Doe" required />
@@ -451,21 +440,28 @@
               </div>
               <div class="form-group">
                 <label>Message</label>
-                <textarea rows="4" placeholder="Hello Vasudeva, I'd like to discuss a project..." required></textarea>
+                <textarea rows="4" placeholder="Hi Vasudeva, I would like to discuss an AI project..." required></textarea>
               </div>
-              <button type="submit" class="btn btn-primary btn-full">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+              <button type="submit" class="btn btn-primary btn-full">
+                Send Message <i class="fa-solid fa-paper-plane"></i>
+              </button>
             </form>
           </div>
+
         </div>
       </section>
 
       <!-- FOOTER -->
       <footer class="footer">
-        <p>© 2026 Rekapalli Vasudeva. Built with HTML5 Canvas, Lenis & Clean Floating Design.</p>
+        <p>© 2026 Rekapalli Vasudeva. Designed & Built with HTML5 Canvas, TypeScript & Lenis Scroll.</p>
       </footer>
+
     </main>
   </div>
 
-  <script type="module" src="./main.js"></script>
+  <!-- Lenis Script -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <!-- Main Application JavaScript -->
+  <script src="main.js"></script>
 </body>
 </html>
