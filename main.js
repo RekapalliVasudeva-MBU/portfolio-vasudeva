@@ -66,7 +66,7 @@ async function preloadImages() {
   }
 }
 
-// Crisp High-DPI Resolution Canvas Setup
+// High-DPI Resolution Canvas Setup
 function resizeCanvas() {
   const dpr = window.devicePixelRatio || 1;
   canvasCssWidth = window.innerWidth;
@@ -120,9 +120,9 @@ function updateScrollPosition() {
   updateActiveNavLink();
 }
 
-// Continuous ultra-smooth lerp loop (0.18 lerp factor for silky smooth sub-frame physics)
+// Snappy & smooth lerp loop tuned for mouse wheel rings (0.28 lerp factor)
 function animationLoop() {
-  const lerpFactor = 0.18;
+  const lerpFactor = 0.28;
   const diff = targetFrame - currentFrame;
 
   if (Math.abs(diff) > 0.001) {
@@ -400,12 +400,14 @@ async function init() {
     loader.classList.add('hidden');
   }
 
+  // Tuned Lenis wheel physics (500ms easing + 1.0 wheel multiplier for instant mouse ring clicks)
   if (typeof Lenis !== 'undefined') {
     const lenis = new Lenis({
-      duration: 1.0,
+      duration: 0.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.2,
     });
 
     function raf(time) {
